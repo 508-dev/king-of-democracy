@@ -1,17 +1,43 @@
 const gameState = {};
 
 addEventListener("load", main);
+const appstate = {
+    votes: 0,
+    progress: null,
+};
+
+function incrementVote(amount) {
+    appstate.votes += amount;
+    progress.value = appstate.votes;
+
+}
+
+function decrementVote(amount) {
+    appstate.votes -= amount;
+    progress.value = appstate.votes;
+}
 
 function main() {
     let firstButton = createElement('button');
+    firstButton.textContent = 'DM Friend and Beg for Vote';
+    firstButton.onclick = () => {
+        incrementVote(1);
 
-    document.getElementById('#controls').appendChild(firstButton);
+    };
 
+    document.getElementById('controls').appendChild(firstButton);
+
+    let firstProgress = createElement('progress');
+    firstProgress.id = 'progress';
+    firstProgress.max = 100;
+    firstProgress.value = 0;
+    document.getElementById('progress-region').appendChild(firstProgress);
+    appstate.progress = firstProgress;
 }
 
 
 function setPosition(position) {
-    document.getElementById('#position').textContent = position;
+    document.getElementById('position').textContent = position;
 }
 
 function createElement(elementType){
@@ -19,6 +45,7 @@ function createElement(elementType){
         'button',
         'li',
         'ul',
+        'progress'
     ];
     if (validElements.includes(elementType)) {
         return document.createElement(elementType);
