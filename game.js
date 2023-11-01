@@ -3,25 +3,40 @@ const gameState = {};
 addEventListener("load", main);
 const appstate = {
     votes: 0,
+    voteTarget: 100,
     progress: null,
+    handleVoteWin: () => {console.log('handle vote win not handled!')}
 };
+const appstateProxy = new Proxy(appstate, {
+    set: function (target, key, value) {
+        switch (key){
+          case 'votes':
+            if (target.votes + value >= target.voteTarget) {
+                setTimeout(target.handleVoteWin, 1);
+            }
+        }
+        console.log(`${key} set to ${value}`);
+        target[key] = value;
+        return true;
+    }
+});
 
 function incrementVote(amount) {
-    appstate.votes += amount;
-    progress.value = appstate.votes;
+    appstateProxy.votes += amount;
+    progress.value = appstateProxy.votes;
 
 }
 
 function decrementVote(amount) {
-    appstate.votes -= amount;
-    progress.value = appstate.votes;
+    appstateProxy.votes -= amount;
+    progress.value = appstateProxy.votes;
 }
 
 function main() {
     let firstButton = createElement('button');
     firstButton.textContent = 'DM Friend and Beg for Vote';
     firstButton.onclick = () => {
-        incrementVote(1);
+        incrementVote(10);
 
     };
 
@@ -32,7 +47,8 @@ function main() {
     firstProgress.max = 100;
     firstProgress.value = 0;
     document.getElementById('progress-region').appendChild(firstProgress);
-    appstate.progress = firstProgress;
+    appstateProxy.progress = firstProgress;
+    appstateProxy.handleVoteWin = () => {console.log('lets handle this')};
 }
 
 
